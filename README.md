@@ -3,9 +3,104 @@ A case study for a scalable and secure clinet reporting for a growing patient Ad
 
 
 
-# Task 1: Client-Facing Report – UnitedHealthcare
+# Task 1: Client-Facing Report – UnitedHealthcare (UHC) MODELLING
 
-## 🎯 Objective
+# MyTomorrows
+A case study for scalable and secure client reporting for a growing Patient Advocacy Group
+
+---
+
+# Task 1 - Client-Facing Report for UnitedHealthcare
+
+## Summary of the Assignment
+
+UnitedHealthcare, as a client of a Patient Advocacy Group, requested a secure and standardized report that helps them:
+
+- Understand and group procedures into consistent categories
+- Identify high-volume procedures
+- Flag missed patients, especially those without insurance
+- Export the data sorted by procedure and latest date
+- Receive insights via Tableau dashboards without exposing PII
+
+This report outlines how the data was modeled, transformed, and secured to meet these requirements.
+
+---
+
+## How I Would Model and Transform the Data (DBT or SQL Logic)
+
+### - 1. Source Layer (Staging Models)
+
+- These models clean and standardize raw inputs from source tables like:
+  - fct_procedures
+  - fct_encounters
+  - dim_payers
+- Basic SQL transformations include renaming, casting, and removing unnecessary fields
+
+```sql
+SELECT
+  CODE AS procedure_code,
+  DESCRIPTION AS procedure_description,
+  BASE_COST::NUMERIC
+FROM {{ source('raw', 'fct_procedures') }}
+```
+
+---
+
+### - 2. Intermediate Layer (Join + Enrichment)
+
+- Models join encounters and procedures with dimension tables (payers, orgs)
+- Apply CASE logic to group procedures into categories such as 'Imaging', 'Oncology', etc.
+- Create flags for uninsured patients and filter by payer name for UnitedHealthcare
+
+```sql
+SELECT
+  p.CODE AS procedure_code,
+  e.START AS procedure_date,
+  pa.NAME AS payer_name,
+  CASE
+    WHEN LOWER(p.DESCRIPTION) LIKE '%therapy%' THEN 'Rehabilitation'
+    ELSE 'Other'
+  END AS standardized_group
+FROM stg_fct_procedures p
+JOIN stg_fct_encounters e ON p.ENCOUNTER = e.Id
+JOIN stg_dim_payers pa ON e.PAYER = pa.Id
+```
+
+---
+
+### - 3. Reporting Layer (Final Views or DBT Models)
+
+- These models are directly used by stakeholders or Tableau:
+  - C1_rpt_procedure_volume_uhc: volume and cost aggregation
+  - C2_rpt_high_volume_patients_uhc: patients with frequent encounters
+  - C6_rpt_procedure_sorted_export_uhc: export sorted by code and date
+  - X2_rpt_tableau_export_masked: masked output ready for Tableau use
+
+Each view is modular and follows naming conventions for clarity and reuse.
+
+---
+
+### - 4. Data Privacy and Security
+
+- Patient identifiers are masked using deterministic hash logic:
+```sql
+substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12)
+```
+- All direct PII (e.g., name, DOB) is excluded from exports and Tableau views
+- Role-based access can be layered via SQL views or Tableau Row-Level Security filters
+
+---
+
+### - Why This Structure
+
+- Keeps logic modular and testable, ideal for DBT
+- Makes it easy to audit and trace data from source to report
+- Aligns with HIPAA data privacy standards
+- Easily extensible to other clients or internal reports
+
+---
+
+## Objective
 
 UnitedHealthcare needs a comprehensive reporting solution that:
 
@@ -16,188 +111,31 @@ UnitedHealthcare needs a comprehensive reporting solution that:
 
 ---
 
-## 🧱 Data Modeling & Transformation
+## Data Modeling & Transformation
 
-### ✅ Standardize Insurance Coverage & Treatment Categories
-
-**View**: [`Z1_dim_procedure_category_mapping`](#z1_dim_procedure_category_mapping)
-
-<details id="z1_dim_procedure_category_mapping">
-<summary>SQL Logic</summary>
-
-```sql
-CREATE VIEW Z1_dim_procedure_category_mapping AS
-SELECT 
-  p.CODE AS procedure_code,
-  p.DESCRIPTION,
-  CASE
-    WHEN LOWER(p.DESCRIPTION) LIKE '%assessment%' THEN 'Assessment'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%screening%' THEN 'Screening'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%dialysis%' THEN 'Chronic Care'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%injection%' THEN 'Medication Administration'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%therapy%' THEN 'Rehabilitation'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%chemotherapy%' THEN 'Oncology'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%colonoscopy%' THEN 'Diagnostic Procedure'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%examination%' THEN 'Diagnostic Procedure'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%biopsy%' THEN 'Diagnostic Procedure'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%ultrasound%' THEN 'Imaging'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%mammography%' THEN 'Imaging'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%echocardiography%' THEN 'Imaging'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%scan%' THEN 'Imaging'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%cardioversion%' THEN 'Surgical Procedure'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%ablation%' THEN 'Surgical Procedure'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%surgery%' THEN 'Surgical Procedure'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%vaccination%' THEN 'Preventive Care'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%test%' THEN 'Laboratory'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%measurement%' THEN 'Laboratory'
-    ELSE 'Other'
-  END AS standardized_group
-FROM fct_procedures p;
-```
-</details>
+[The SQL view logic with collapsible sections is intentionally omitted here to avoid duplication. See original linked markdown if needed.]
 
 ---
 
-### ✅ High-Volume Procedures & Missed Patients
+## Tableau Dashboard Design
 
-**View**: [`C1_rpt_procedure_volume_uhc`](#c1_rpt_procedure_volume_uhc)
-
-<details id="c1_rpt_procedure_volume_uhc">
-<summary>SQL Logic</summary>
-
-```sql
-CREATE VIEW C1_rpt_procedure_volume_uhc AS
-SELECT
-  p.CODE AS procedure_code,
-  p.DESCRIPTION AS procedure_description,
-  COUNT(*) AS procedure_count,
-  SUM(p.BASE_COST) AS total_base_cost
-FROM fct_procedures p
-JOIN fct_encounters e ON p.ENCOUNTER = e.Id
-JOIN dim_payers py ON e.PAYER = py.Id
-WHERE py.NAME = 'UnitedHealthcare'
-GROUP BY p.CODE, p.DESCRIPTION;
-```
-</details>
-
-**View**: [`C2_rpt_high_volume_patients_uhc`](#c2_rpt_high_volume_patients_uhc)
-
-<details id="c2_rpt_high_volume_patients_uhc">
-<summary>SQL Logic</summary>
-
-```sql
-CREATE VIEW C2_rpt_high_volume_patients_uhc AS
-SELECT 
-  e.PATIENT,
-  COUNT(*) AS total_visits
-FROM fct_encounters e
-JOIN dim_payers py ON e.PAYER = py.Id
-WHERE py.NAME = 'UnitedHealthcare'
-GROUP BY e.PATIENT
-HAVING COUNT(*) > 50
-ORDER BY total_visits DESC;
-```
-</details>
-
-**View**: [`C4_rpt_uninsured_patients_all`](#c4_rpt_uninsured_patients_all)
-
-<details id="c4_rpt_uninsured_patients_all">
-<summary>SQL Logic</summary>
-
-```sql
-CREATE VIEW C4_rpt_uninsured_patients_all AS
-SELECT 
-  e.PATIENT,
-  COUNT(*) AS uninsured_visits,
-  SUM(e.TOTAL_CLAIM_COST) AS total_cost
-FROM fct_encounters e
-JOIN dim_payers py ON e.PAYER = py.Id
-WHERE LOWER(py.NAME) LIKE '%insurance%'
-GROUP BY e.PATIENT
-ORDER BY uninsured_visits DESC;
-```
-</details>
+- Filters: Standardized Group, Date Range, Insurance Coverage
+- Visuals:
+  - KPI tiles: Total Encounters, High-Volume Patients, Uninsured Patients
+  - Bar chart: Volume by Procedure Group
+  - Stacked bar: Procedure Group × Insurance Status
+  - Exportable table view from `X2_rpt_tableau_export_masked`
 
 ---
 
-### ✅ Sorted Export by Procedure and Latest Date
+## Filters & Permissions
 
-**View**: [`C6_rpt_procedure_sorted_export_uhc`](#c6_rpt_procedure_sorted_export_uhc)
-
-<details id="c6_rpt_procedure_sorted_export_uhc">
-<summary>SQL Logic</summary>
-
-```sql
-CREATE VIEW C6_rpt_procedure_sorted_export_uhc AS
-SELECT 
-  e.PATIENT,
-  p.CODE AS procedure_code,
-  p.DESCRIPTION AS procedure_description,
-  p.BASE_COST,
-  e.START AS procedure_date,
-  e.TOTAL_CLAIM_COST,
-  e.PAYER_COVERAGE
-FROM fct_procedures p
-JOIN fct_encounters e ON p.ENCOUNTER = e.Id
-JOIN dim_payers py ON e.PAYER = py.Id
-WHERE py.NAME = 'UnitedHealthcare'
-ORDER BY p.CODE, procedure_date DESC;
-```
-</details>
+- Row-Level Security: User-organization mapping in Tableau
+- SQL-Level: Masked IDs and pre-filtered views only
 
 ---
 
-### ✅ Tableau-Safe PII-Free Export
-
-**View**: [`X2_rpt_tableau_export_masked`](#x2_rpt_tableau_export_masked)
-
-<details id="x2_rpt_tableau_export_masked">
-<summary>SQL Logic</summary>
-
-```sql
-CREATE VIEW X2_rpt_tableau_export_masked AS
-SELECT 
-  e.Id AS encounter_id,
-  e.START,
-  substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id,
-  ...
-  CASE
-    WHEN LOWER(p.DESCRIPTION) LIKE '%test%' THEN 'Laboratory'
-    WHEN LOWER(p.DESCRIPTION) LIKE '%measurement%' THEN 'Laboratory'
-    ELSE 'Other'
-  END AS standardized_group
-FROM fct_procedures p
-JOIN fct_encounters e ON p.ENCOUNTER = e.Id
-JOIN dim_payers pa ON e.PAYER = pa.Id
-JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
-```
-</details>
-
----
-
-## 📊 Tableau Dashboard Design
-
-**Filters**:
-- Standardized Group
-- Date Range
-- Insurance Coverage
-
-**Visuals**:
-- KPI tiles: Total Encounters, High-Volume Patients, Uninsured Patients
-- Bar chart: Volume by Procedure Group
-- Stacked bar: Procedure Group × Insurance Status
-- Exportable table view from `X2_rpt_tableau_export_masked`
-
----
-
-## 🔐 Filters & Permissions
-
-- **Row-Level Security**: Use user-org mapping in Tableau
-- **SQL-Level**: Use only masked IDs and pre-joined, filtered views
-
----
-
-## 🛡️ Summary Table
+## Summary Table
 
 | Component       | Method                                     |
 |----------------|--------------------------------------------|
@@ -208,44 +146,39 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 
 ---
 
-
----
-
-## 🧾 Summary Table Explained
+## Summary Table Explained
 
 | Component       | Method                                     |
 |----------------|--------------------------------------------|
-| **Anonymization**  | Masked patient identifiers using hash logic: `substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12)` – ensures patients are pseudonymous but consistent across records |
-| **Grouping**       | Procedures are categorized using CASE logic into standard groups (e.g., Imaging, Oncology) via views like `Z1`, `X1`, and `X2` |
-| **Export**         | Views like `C6` and `X2` are pre-filtered, anonymized, and sorted to deliver export-ready datasets for UnitedHealthcare |
-| **Privacy**        | Direct identifiers like name and DOB are excluded entirely – only masked IDs are shown in Tableau and exports |
+| Anonymization  | Uses hash logic: `substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12)` – ensures pseudonymity |
+| Grouping       | Procedures grouped using CASE logic into categories like Imaging, Oncology |
+| Export         | Views like `C6` and `X2` are filtered, anonymized, and sorted |
+| Privacy        | No names, DOBs, or patient-identifying fields shown |
 
 ---
 
-## 🧮 Snapshot of Tables and Views – What They Represent
+## Snapshot of Tables and Views – What They Represent
 
 ### Base Tables (Fact + Dimension)
-- **fct_procedures**: Raw procedure-level data (code, description, base cost, encounter ID)
-- **fct_encounters**: Encounter metadata (start date, patient ID, claim cost, payer coverage)
-- **dim_payers**: Insurance provider information (payer name, ID)
-- **dim_organizations**: Organization or facility-level data
-- **dim_procedure_category_mapping**: Mapping table to group procedures into categories
 
----
+- fct_procedures: procedure data (code, cost)
+- fct_encounters: patient visits with timestamps and payer info
+- dim_payers: payer metadata
+- dim_organizations: facility metadata
+- dim_procedure_category_mapping: maps raw procedures to groups
 
-### Key Views for UnitedHealthcare Report
+### Key Views
 
 | View Name | Purpose |
 |-----------|---------|
-| **Z1_dim_procedure_category_mapping** | Defines grouping logic for raw procedure descriptions |
-| **C1_rpt_procedure_volume_uhc** | Counts and cost summaries of procedures for UnitedHealthcare |
-| **C2_rpt_high_volume_patients_uhc** | Flags patients with high numbers of visits under UHC |
-| **C4_rpt_uninsured_patients_all** | Identifies patients without insurance coverage |
-| **C6_rpt_procedure_sorted_export_uhc** | Provides export-ready data sorted by procedure and date |
-| **X2_rpt_tableau_export_masked** | Final export view with masked patient IDs, procedure categories, and no PII |
-| **V1_summary_uhc_dashboard** (optional) | Summary layer for Tableau performance (can be added) |
+| Z1_dim_procedure_category_mapping | Grouping logic for procedures |
+| C1_rpt_procedure_volume_uhc | Volume and cost by procedure |
+| C2_rpt_high_volume_patients_uhc | High-visit patients |
+| C4_rpt_uninsured_patients_all | Patients without insurance |
+| C6_rpt_procedure_sorted_export_uhc | Export-ready data sorted |
+| X2_rpt_tableau_export_masked | Tableau-safe, PII-free output |
 
-These views combine fact and dimension data, filter for UHC-specific logic, group treatments consistently, and ensure safe, compliant exports.
+------
 
----
+
 
