@@ -1,0 +1,86 @@
+# Case Study: Scalable and Secure Client Reporting  
+_A Senior Data & Reporting Analyst Assignment_
+
+## 📍 Context  
+We are a fast-growing Patient Advocacy Group (PAG) supporting individuals with a variety of medical conditions. We collaborate with healthcare clients like United Healthcare and Humana, providing insights into patient treatment trends and outcomes. Internally, our stakeholders include program managers and senior leadership who rely on consistent, trustworthy reporting.
+
+Our data ecosystem is undergoing modernization and currently includes:  
+- PostgreSQL reporting data warehouse  
+- ETL pipelines managed with **Airflow**  
+- Transition from legacy SQL scripts to **DBT**  
+- Dashboards built in **Tableau** with planned role-based access  
+- Programming primarily in **SQL**  
+- Strong focus on **HIPAA** compliance and data privacy  
+
+---
+
+## 🧩 Your Role  
+As a **Senior Data & Reporting Analyst**, your task is to improve internal and external reporting by working with messy real-world data and building stakeholder-driven, scalable solutions.
+
+The provided dataset includes mock data (e.g. procedures, insurance info, anonymized metadata), already loaded into the data warehouse.
+
+Deliverables can be in **Markdown** or **PDF** format.
+
+---
+
+## ✅ Task 1: Client-Facing Report – United Healthcare
+
+### 🎯 Objectives
+- Group similar procedures to standardize insurance coverage  
+- Identify high-volume procedures and detect uninsured patients  
+- Export sorted data by procedure and latest procedure date  
+- Provide **Tableau** dashboards with no patient PII exposed  
+
+### 📦 Deliverables
+- Data model and transformation logic (SQL/DBT)
+- Tableau dashboard mockup (filters: procedure category, latest date)
+- Client-level access permissions (SQL or Tableau)
+- Approach to anonymization, grouping, and export logic
+
+---
+
+## ✅ Task 2: Internal Report – Humana Hospital Team
+
+### 🎯 Objectives
+- Filterable dashboard by medical specialty  
+- Hide "hospice treatments" unless user is authorized  
+- Track patients over time and by procedure  
+
+### 📦 Deliverables
+- Technical setup (access control, transformation strategy)
+- Dashboard wireframe with specialty filters and sensitive-data handling
+- Explanation of permissions logic and implementation
+
+---
+
+## ✅ Task 3: Senior Management Deep-Dive Report
+
+### 🎯 Objectives
+- Provide granular operational insights  
+- Raw data extracts for all staff; visualizations for executives only  
+- Ongoing monitoring of procedure volume, costs, missed care, trends  
+
+### 📦 Deliverables
+- Structure and differences between executive dashboard vs raw extracts
+- Tableau or SQL-level permission strategies
+- 3–5 key KPIs (e.g., avg procedure cost, uninsured ratio, care gaps)
+
+---
+
+## ✅ Task 4: Data Pipeline & Governance Proposal
+
+### 🎯 Objectives
+- Clean, maintainable data models  
+- Scalable and automated pipelines via Airflow and DBT  
+- Secure, governed data ecosystem  
+- Seamless Tableau integration  
+
+### 📦 Deliverables
+- Proposal for transformation logic and pipeline structure  
+- Governance plan (lineage, audit logs, version control)  
+- Tableau integration and role-based delivery strategy
+
+---
+
+**Note**: All outputs should respect data privacy regulations and aim for scalable, maintainable designs.
+
