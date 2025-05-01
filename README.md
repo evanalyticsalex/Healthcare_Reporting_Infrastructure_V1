@@ -324,3 +324,66 @@ ORDER BY 1, 4 DESC
 </details>
 
 This model serves as a Tableau extract source, ensuring client visibility without compromising patient privacy.
+
+# Task 2: Internal Report for Multi-Specialty Hospital Team (Humana)
+
+## D2.A — Technical Setup
+
+### Data Architecture
+- **Data Warehouse**: PostgreSQL used for centralized, structured reporting
+- **ETL Management**: Airflow schedules raw data ingestion and DBT model runs
+- **Transformation Logic**:
+  - `fct_procedures`: fact table with patient, procedure, specialty, and timestamp data
+  - `dim_specialties`: links procedures to their medical specialty
+  - `dim_authorizations`: maps users to specialties and hospice treatment access
+  - `fct_patients_helped`: time-bound aggregation of patient counts per specialty
+- **Visualization**: Tableau connected via a service account with role-based row-level security
+- **Compliance**: All pipelines and outputs designed with HIPAA-compliant anonymization (hashed patient IDs, no direct identifiers)
+
+---
+
+## D2.B — Dashboard Layout
+
+| Section                      | Functionality                                                                 |
+|-----------------------------|-------------------------------------------------------------------------------|
+| **Specialty Filter**        | Dropdown sourced from `dim_specialties`, scoped by user's access rights      |
+| **Date Range Filter**       | Relative date filter (last 7/30/90 days or custom range)                      |
+| **Patient Summary Tiles**   | KPIs: total patients helped, avg per specialty, % change from previous period |
+| **Procedure Breakdown**     | Bar chart: patient count by procedure (filtered by specialty & time)         |
+| **Hospice Treatments**      | Hidden section: visible only to authorized users (based on RLS and permissions) |
+| **Trends Over Time**        | Line chart: patients helped per month per specialty                          |
+
+All charts and filters respect underlying permission controls.
+
+---
+
+## D2.C — Permissions & Privacy Integration
+
+### 1. **Hospice Data Restrictions**
+- `procedure_type = 'hospice'` is flagged in DBT models
+- Users with `is_hospice_authorized = TRUE` in `dim_authorizations` can access hospice data
+- **Enforced via**:
+  - Row-level security (RLS) in Tableau: `CASE WHEN is_hospice_authorized THEN TRUE ELSE procedure_type != 'hospice'`
+  - Filter-level logic in DBT to minimize exposure before Tableau
+
+### 2. **Specialty-Based Filtering**
+- Each user is mapped to allowed specialties in `dim_authorizations`
+- DBT applies early filtering using `WHERE specialty IN (user_allowed_specialties)`
+- Tableau respects the scoped data based on user role context
+
+### 3. **Timeframe Tracking**
+- `fct_patients_helped` aggregates patient data by specialty, procedure, and date
+- Allows consistent tracking and visualization over dynamic periods
+
+### 4. **Privacy Safeguards**
+- Pseudonymization of patient identifiers at ingestion
+- No names, contact details, or direct PII in any layer
+- Tableau and PostgreSQL access logged for auditability
+- Use of service accounts with least privilege access model
+
+---
+
+## Summary
+
+This internal reporting setup for Humana ensures specialty-specific usability, sensitive data protection, and regulatory compliance, built on a scalable stack using PostgreSQL, DBT, Airflow, and Tableau.
+
