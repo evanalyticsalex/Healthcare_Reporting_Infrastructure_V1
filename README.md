@@ -342,6 +342,41 @@ This model serves as a Tableau extract source, ensuring client visibility withou
 
 ---
 
+### 🔧 Functional / To Be Created
+
+#### `dim_authorizations` (🔧)
+A user-role mapping table needs to be created manually. This should include:
+- `user_id`: unique identifier for internal users
+- `allowed_specialties`: array or normalized table mapping users to specialties
+- `is_hospice_authorized`: boolean flag controlling access to hospice treatment data
+
+#### HIPAA-Compliant Anonymization (🔧)
+The `patients.csv` file contains direct identifiers (`first_name`, `last_name`, `email`, etc.). Before any reporting:
+- Apply SHA-256 or similar hashing on patient IDs
+- Exclude or mask PII fields entirely in reporting layers
+- Ensure downstream models work with pseudonymized keys only
+
+#### Tableau RLS via Service Account (🔧)
+Row-level security and visibility control will be implemented in Tableau using:
+- **User filters**: mapping Tableau users to specialty access
+- **RLS conditions**: e.g., `procedure_type != 'hospice'` unless authorized
+- **Conditional visibility**: hide or show sensitive sections using calculated fields and parameters
+
+---
+
+### Summary Table
+
+| Component              | Status | Comment                                                              |
+|------------------------|--------|----------------------------------------------------------------------|
+| `fct_procedures`       | ✅     | Built from `procedures.csv`                                          |
+| `dim_specialties`      | ✅     | Derived from `procedure_name` via lookup mapping                     |
+| `fct_patients_helped`  | ✅     | Aggregation by `procedure_date` and `patient_id`                     |
+| `dim_authorizations`   | 🔧     | Needs manual creation for user-specialty-hospice access mapping      |
+| HIPAA Anonymization    | 🔧     | PII in `patients.csv` must be hashed or excluded                     |
+| Tableau Role Controls  | 🔧     | RLS and visibility filters to be implemented in Tableau              |
+
+---
+
 # D2.B — Dashboard Layout
 
 | Section                      | Functionality                                                                 |
@@ -386,4 +421,5 @@ All charts and filters respect underlying permission controls.
 ## Summary
 
 This internal reporting setup for Humana ensures specialty-specific usability, sensitive data protection, and regulatory compliance, built on a scalable stack using PostgreSQL, DBT, Airflow, and Tableau.
+
 
