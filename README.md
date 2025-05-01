@@ -334,7 +334,7 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 ```
 
 
-## Why This Structure? A brief Explanation
+# Why This Structure? A brief Explanation
 <details>
 - Each layer is clean, logical, and reusable
 - Modular views make debugging and extension easier
