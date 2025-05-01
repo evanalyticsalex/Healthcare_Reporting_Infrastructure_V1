@@ -239,3 +239,88 @@ ISMEMBEROF('Client_UHC')
 | Export  | Server controls                   | Prevent PII exposure               |
 
 </details>
+
+# D1.D: Anonymization, Grouping, and Export Logic
+
+## 🔐 Anonymization
+
+To comply with HIPAA and internal privacy regulations, the following steps are implemented in the DBT transformation layer:
+
+- **Patient ID Hashing:** Replace patient identifiers with a salted hash using SHA256 for consistent but anonymous tracking.
+
+<details>
+<summary>SQL Example Hypothetical</summary>
+
+```sql 
+SELECT
+  SHA256(CONCAT(patient_id, 'secure_salt')) AS hashed_patient_id
+FROM patients
+```
+</details>
+
+- **DOB Bucketing:** Convert `patients.date_of_birth` into non-identifiable age buckets for analysis.
+
+<details>
+<summary>SQL Example Hypothetical</summary>
+
+```sql
+CASE
+  WHEN DATE_PART('year', AGE(CURRENT_DATE, date_of_birth)) BETWEEN 20 AND 29 THEN '20-29'
+  WHEN DATE_PART('year', AGE(CURRENT_DATE, date_of_birth)) BETWEEN 30 AND 39 THEN '30-39'
+  ELSE '40+'
+END AS age_bucket
+```
+</details>
+
+- **PII Exclusion:** Drop fields such as `name`, `address`, and exact `date_of_birth` from reporting views.
+
+## 📦 Grouping (Procedure Standardization)
+
+Standardize procedure types for clearer client reporting and analytics by grouping procedure codes.
+
+Using the `procedures` table:
+
+<details>
+<summary>SQL Example Hypothetical</summary>
+
+```sql
+SELECT
+  procedure_id,
+  encounter_id,
+  procedure_code,
+  CASE
+    WHEN procedure_code IN ('X123', 'X124') THEN 'Knee Surgery'
+    WHEN procedure_code IN ('Y201', 'Y202') THEN 'Heart Monitoring'
+    ELSE 'Other'
+  END AS procedure_group,
+  procedure_date
+FROM procedures
+```
+</details>
+
+This view (`procedure_grouped`) can then be joined with `encounters`, `payers`, and `transformed_patients`.
+
+## 📤 Export Logic (Client View)
+
+For example, to meet the needs of United Healthcare, a DBT model (`client_uhc_export`) aggregates and exports a de-identified, grouped dataset:
+
+<details>
+<summary>SQL Example Hypothetical</summary>
+
+```sql
+SELECT DISTINCT
+  pg.procedure_group,
+  tp.hashed_patient_id,
+  p.coverage_type,
+  MAX(pg.procedure_date) AS latest_procedure_date
+FROM procedure_grouped pg
+JOIN encounters e ON pg.encounter_id = e.encounter_id
+JOIN transformed_patients tp ON e.patient_id = tp.patient_id
+JOIN payers p ON e.payer_id = p.payer_id
+WHERE p.client = 'United Healthcare'
+GROUP BY 1, 2, 3
+ORDER BY 1, 4 DESC
+```
+</details>
+
+This model serves as a Tableau extract source, ensuring client visibility without compromising patient privacy.
