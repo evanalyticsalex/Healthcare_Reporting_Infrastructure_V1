@@ -147,7 +147,7 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 </details>
 
 <details>
-<summary><strong>2️⃣ Intermediate Layer – Grouping Logic</strong></summary>
+<summary><strong>2️⃣ Intermediate Layer – Grouping Logic-Standardize Insurance Coverage</strong></summary>
 
 ```sql
 CREATE VIEW X1_rpt_encounter_procedure_with_grouping AS
@@ -238,25 +238,49 @@ GROUP BY e.PATIENT
 ORDER BY uninsured_visits DESC;
 ```
 
-**Sorted Export**  
+**Export the data by procedure and latest procedure date**  
 ```sql
-CREATE VIEW C6_rpt_procedure_sorted_export_uhc AS
-SELECT 
-  e.PATIENT,
-  p.CODE AS procedure_code,
-  p.DESCRIPTION AS procedure_description,
-  p.BASE_COST,
-  e.START AS procedure_date,
-  e.TOTAL_CLAIM_COST,
-  e.PAYER_COVERAGE
-FROM fct_procedures p
-JOIN fct_encounters e ON p.ENCOUNTER = e.Id
-JOIN dim_payers py ON e.PAYER = py.Id
-WHERE py.NAME = 'UnitedHealthcare'
-ORDER BY p.CODE, procedure_date DESC;
-```
+CREATE VIEW C8_rpt_latest_procedure_summary_uhc AS
+WITH X2_filtered_united AS (
+    SELECT *
+    FROM X2_rpt_tableau_export_masked
+    WHERE LOWER(payer_name) LIKE '%united%'
+),
 
-</details>
+C8_latest_dates_per_patient AS (
+    SELECT masked_patient_id, MAX(START) AS max_start
+    FROM X2_filtered_united
+    GROUP BY masked_patient_id
+),
+
+C8_latest_procedures_per_patient AS (
+    SELECT fd.*
+    FROM X2_filtered_united fd
+    JOIN C8_latest_dates_per_patient ld
+      ON fd.masked_patient_id = ld.masked_patient_id
+     AND fd.START = ld.max_start
+),
+
+C8_final_classified_data AS (
+    SELECT
+        *,
+        CASE 
+            WHEN LOWER(payer) LIKE '%no_insurance%' OR LOWER(payer) LIKE '%no insurance%' THEN 'Uninsured'
+            ELSE 'Insured'
+        END AS insurance_status
+    FROM C8_latest_procedures_per_patient
+)
+
+SELECT
+    standardized_group,
+    COUNT(DISTINCT masked_patient_id) AS distinct_patient_count,
+    COUNT(encounter_id) AS encounter_count,
+    insurance_status,
+    substr(START, 1, 10) AS start_ymd
+FROM C8_final_classified_data
+GROUP BY standardized_group, insurance_status, start_ymd
+ORDER BY distinct_patient_count DESC;
+```
 
 <details>
 <summary><strong>4️⃣ Privacy & Anonymization Logic</strong></summary>
@@ -265,7 +289,7 @@ ORDER BY p.CODE, procedure_date DESC;
 substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id
 ```
 
-**Final Tableau Export Example**  
+**Final Tableau Export Example Masked Patient ID**  
 ```sql
 CREATE VIEW X2_rpt_tableau_export_masked AS
 SELECT 
