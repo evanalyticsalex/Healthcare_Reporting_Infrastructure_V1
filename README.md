@@ -399,3 +399,27 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 - `payer_name`
 
 </details>
+
+# 🔐 D1C – Filters and Permissions for Secure Client Access
+
+## 🧮 SQL-Level Row-Level Security (RLS)
+
+- `WHERE client = 'United Healthcare'`
+- Apply via:
+  - **Secure View** in PostgreSQL
+  - or within a **DBT model** with client-specific logic
+- Ensures data is **filtered before reaching Tableau**
+- Supports compliance with **HIPAA** and internal data segmentation rules
+
+---
+
+## 📊 Tableau-Level Permissions
+
+### 👥 User Group Segmentation
+- Create user group: `Client_UHC`
+- Assign **United Healthcare users** to this group via Tableau Server
+
+### 🔎 Data Source Filters
+- Apply formula:  
+  ```tableau
+  ISMEMBEROF('Client_UHC')
