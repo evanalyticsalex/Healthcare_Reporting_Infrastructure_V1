@@ -261,10 +261,35 @@ SELECT
   e.Id AS encounter_id,
   e.START,
   substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id,
+  e.DESCRIPTION AS encounter_description,
   p.CODE AS procedure_code,
   p.DESCRIPTION AS procedure_description,
+  p.BASE_COST,
+  e.TOTAL_CLAIM_COST,
+  e.PAYER_COVERAGE,
+  e.payer,
+  pa.NAME AS payer_name,
+  o.NAME AS org_name,
   CASE
+    WHEN LOWER(p.DESCRIPTION) LIKE '%assessment%' THEN 'Assessment'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%screening%' THEN 'Screening'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%dialysis%' THEN 'Chronic Care'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%injection%' THEN 'Medication Administration'
     WHEN LOWER(p.DESCRIPTION) LIKE '%therapy%' THEN 'Rehabilitation'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%chemotherapy%' THEN 'Oncology'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%colonoscopy%' THEN 'Diagnostic Procedure'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%examination%' THEN 'Diagnostic Procedure'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%biopsy%' THEN 'Diagnostic Procedure'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%ultrasound%' THEN 'Imaging'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%mammography%' THEN 'Imaging'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%echocardiography%' THEN 'Imaging'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%scan%' THEN 'Imaging'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%cardioversion%' THEN 'Surgical Procedure'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%ablation%' THEN 'Surgical Procedure'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%surgery%' THEN 'Surgical Procedure'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%vaccination%' THEN 'Preventive Care'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%test%' THEN 'Laboratory'
+    WHEN LOWER(p.DESCRIPTION) LIKE '%measurement%' THEN 'Laboratory'
     ELSE 'Other'
   END AS standardized_group
 FROM fct_procedures p
