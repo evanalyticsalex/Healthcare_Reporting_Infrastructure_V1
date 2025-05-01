@@ -28,6 +28,20 @@ Each deliverable is named as required:
 
 ---
 
+
+---
+
+## 🧠 Task 1: Build a Client-Facing Report (United Healthcare)
+
+UnitedHealthcare requested a secure, standardized view of their patient data. The objectives were:
+
+- Standardize insurance coverage for treatments (group similar procedures)  
+- Identify high-volume procedures and patients missed (especially uninsured)  
+- Export the data sorted by procedure and latest procedure date  
+- Receive data visualizations via Tableau, without exposing patient PII  
+
+---
+
 # 🧩 D1.A – How I Would Model and Transform the Data
 
 <details>
@@ -109,6 +123,19 @@ substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id
 ```
 
 </details>
+
+---
+
+
+---
+
+## ✅ Why This Structure?
+
+- Each layer is clean, logical, and reusable  
+- Modular views make debugging and future development easier  
+- Mimics DBT-style transformations, enabling lineage tracking  
+- Designed with privacy and export-readiness in mind  
+- Ideal for use in Tableau or other BI tools  
 
 ---
 
