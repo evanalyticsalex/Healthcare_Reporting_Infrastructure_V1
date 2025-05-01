@@ -310,3 +310,12 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 ```
 
 </details>
+
+### - Why This Structure
+
+- Each layer is clean, logical, and reusable
+- Modular views make debugging and extension easier
+- Ideal for DBT workflows with lineage tracking
+- Fully privacy-compliant and production-ready
+
+------
