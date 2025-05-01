@@ -31,7 +31,7 @@ Each deliverable is named as required:
 
 The diagram below illustrates the structure used in the data model:
 
-![Entity Relationship Diagram](erd_diagram.png)
+![Entity Relationship Diagram](data/erd_diagram.png)
 
 
 
