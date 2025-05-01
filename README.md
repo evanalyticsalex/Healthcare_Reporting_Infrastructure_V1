@@ -400,7 +400,8 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 
 </details>
 
-## 🔐 D1C – Filters and Permissions for Secure Client Access
+
+# 🔐 D1.C – Filters and Permissions for Secure Client Access
 
 ## 🧮 SQL-Level Row-Level Security (RLS)
 
@@ -423,3 +424,31 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 - Apply formula:  
   ```tableau
   ISMEMBEROF('Client_UHC')
+  ```
+
+- Restricts dashboard visibility to rows matching that client
+
+### 🕶️ Hide PII Fields
+- Drop or mask Personally Identifiable Information:
+  - Done at **SQL level** (DBT or source view)
+  - Tableau **never sees** raw PII data
+
+---
+
+## 📤 Export Limitation & Access Control
+
+- **CSV export** allowed *only* from sanitized, aggregated tables  
+- Avoid joins to any table containing PII  
+- Use **Tableau Server permissions** to:
+  - Restrict export capabilities by role  
+  - Limit access to download options per dashboard
+
+---
+
+## 🧾 Summary of Access Control Layers
+
+| Layer   | Technique                         | Purpose                            |
+|---------|-----------------------------------|------------------------------------|
+| SQL     | Row-Level Security in DBT/View    | Pre-filter data by client          |
+| Tableau | User Groups + Data Source Filters | Restrict visibility per user group |
+| Export  | Server-level CSV restrictions     | Prevent PII leakage on download    |
