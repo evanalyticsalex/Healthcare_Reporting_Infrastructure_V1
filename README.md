@@ -1,5 +1,6 @@
 
-# 💊 MyTomorrows – Scalable & Secure Client Reporting  
+# 💊(https://logo.clearbit.com/mytomorrows.com)
+MyTomorrows – Scalable & Secure Client Reporting  
 _A case study for a growing Patient Advocacy Group_
 
 ---
