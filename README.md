@@ -595,5 +595,5 @@ My approach is not just about clean SQL—it’s about building a **governance-f
 - ✅ Empower internal teams to make faster, more informed decisions  
 - ✅ Scale data workflows as new therapeutic areas, partners, and programs come online  
 
-> If desired, I can mock this into a DBT repo layout or diagram the Airflow + Tableau integration pipeline to demonstrate how I'd execute this plan from Day 1.
+
 
