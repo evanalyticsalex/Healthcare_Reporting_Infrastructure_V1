@@ -334,11 +334,17 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 ```
 
 
-# Why This Structure? A brief Explanation
+✅ Why This Structure?
+
 <details>
-- Each layer is clean, logical, and reusable
-- Modular views make debugging and extension easier
-- Ideal for DBT workflows with lineage tracking
-- Fully privacy-compliant and production-ready
+<summary>Click to expand</summary>
+
+Each layer is clean, logical, and reusable  
+Modular views make debugging and future development easier  
+Mimics DBT-style transformations, enabling lineage tracking  
+Designed with privacy and export-readiness in mind  
+Ideal for use in Tableau or other BI tools  
+
+</details>
 
 ------
