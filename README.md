@@ -2,15 +2,8 @@
 A case study for a scalable and secure clinet reporting for a growing patient Advocacy
 
 
-
-# Task 1: Client-Facing Report – UnitedHealthcare (UHC) MODELLING
-
-# MyTomorrows
-A case study for scalable and secure client reporting for a growing Patient Advocacy Group
-
----
-
 # Task 1 - Client-Facing Report for UnitedHealthcare
+# MODELLING
 
 ## Summary of the Assignment
 
