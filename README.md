@@ -334,22 +334,22 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 ```
 
 
-✅ Why This Structure?
+</details>
 
 <details>
-<summary>Click to expand</summary>
+<summary><strong>✅ Why This Structure?</strong></summary>
 
-Each layer is clean, logical, and reusable  
-Modular views make debugging and future development easier  
-Mimics DBT-style transformations, enabling lineage tracking  
-Designed with privacy and export-readiness in mind  
-Ideal for use in Tableau or other BI tools  
+- Each layer is clean, logical, and reusable  
+- Modular views make debugging and future development easier  
+- Mimics DBT-style transformations, enabling lineage tracking  
+- Designed with privacy and export-readiness in mind  
+- Ideal for use in Tableau or other BI tools  
 
 </details>
 
 ---
 
-# D1.B 📊 Tableau Dashboard Mockup Plan
+## D1.B 📊 Tableau Dashboard Mockup Plan
 
 <details>
 <summary><strong>📋 Filters (Top of Dashboard)</strong></summary>
