@@ -147,34 +147,37 @@ substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id
 
 # 📊 D1.B – Tableau Dashboard Mockup Plan
 
+![Tableau UHC Dashboard](:data/Tableau_UHC.png)
+
 <details>
 <summary><strong>📋 Filters</strong></summary>
 
-- Procedure Group  
+- Organisation  
+- Standardized Group  
 - Date Range  
-- Insurance Coverage  
 
 </details>
 
 <details>
 <summary><strong>📌 KPI Tiles</strong></summary>
 
-- Total Encounters  
-- High-Volume Patients  
-- Uninsured Patients  
+- Total Standardized Insurance Coverage (€)  
+- % of Uninsured vs Insured  
+- Encounter Totals by Group (Latest Day)  
 
 </details>
 
 <details>
 <summary><strong>📊 Bar Chart</strong></summary>
 
-- X-axis: Procedure Group  
+- X-axis: Procedure Description  
 - Y-axis: Encounter Count  
+- Insight: Top Procedures by Volume  
 
 </details>
 
 <details>
-<summary><strong>📈 Line Chart</strong></summary>
+<summary><strong>📈 Line Chart (Future Enhancement)</strong></summary>
 
 - X-axis: Procedure Date  
 - Y-axis: Monthly Encounter Volume  
@@ -184,10 +187,10 @@ substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id
 <details>
 <summary><strong>📄 Table Export</strong></summary>
 
-- Procedure Group  
-- Cost  
+- Standardized Group  
+- Cost (€)  
 - Procedure Date  
-- Organization Name  
+- Organisation  
 - Payer Name  
 
 </details>
