@@ -504,3 +504,96 @@ The reporting setup provides:
 - **Raw Extracts** to all staff via secure portals for data transparency and operational usage
 - **Executive Dashboards** with deeper insights and role-based access control to guide strategic decision-making
 
+# 🧠 Task4: Data Pipeline & Governance Strategy – Driving Scalable, Secure Insight Delivery
+
+As **Senior Data & Reporting Analyst**, my priority will be to **stabilize and scale your reporting infrastructure** so it serves both client commitments and internal growth. Here's how I would deliver immediate and long-term value:
+
+---
+
+# 🔍 D4.A Clean, Well-Modeled Data – Designed for Trust & Reusability
+
+### **Modular DBT Layering**
+I’d structure the DBT project with `staging → intermediate → marts`, separating concerns and making transformation logic transparent and testable:
+- **Staging**: Apply consistent naming, date formatting, and type casting.
+- **Intermediate**: Centralize logic for joins, grouping, and anonymization (e.g., insured status, specialty tagging).
+- **Marts**: Tailored models by stakeholder—UnitedHealthcare, Humana, internal ops, executive.
+
+### **Data Contracts + Testing**
+Proactively define column-level expectations using:
+- DBT tests: `not_null`, `unique`, `accepted_values`
+- Source freshness monitoring  
+This ensures consistent logic and minimizes breakage risk during iteration.
+
+### **Documentation**
+Every model should be documented with purpose, input/output, and owner—critical for transparency and onboarding as the team grows.
+
+---
+
+# 🔁 D4.B Repeatable, Scalable Pipelines – Airflow Orchestration That Works for You
+
+### **Domain-Based DAGs**
+Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
+- Example: `client_reporting_dag`, `internal_monitoring_dag`
+
+### **Execution Flexibility**
+- Hourly for operations
+- Daily for client delivery
+- Weekly for executive metrics
+
+### **Resilience Built-In**
+- Retries, failure alerts (Slack/email), task-level logging
+- Optional: Integrate **Great Expectations** for advanced data validation
+
+### **Secure Secrets Management**
+- Use Airflow Variables or HashiCorp Vault
+- Avoid credentials or tokens in DAG source code
+
+---
+
+# 🔐 D4.C Governance & Security – HIPAA-Grade by Design
+
+### **Patient Privacy**
+- SHA-256 hashing for patient IDs
+- Strip all PII at the staging layer
+- Export only anonymized, aggregated data—never raw tables in Tableau
+
+### **Role-Based Access**
+- PostgreSQL Row-Level Security for organization-level filters
+- Tableau permissions by stakeholder group:
+  - **Executives**: Full dashboards
+  - **Program Managers**: Filtered operational views
+  - **Clients**: Export-only, no access to sensitive fields
+
+### **Audit & Traceability**
+- Log Airflow run metadata to PostgreSQL or a centralized log tool
+- Use Git for DBT and DAG version control
+
+---
+
+# 📊 D4.D Seamless Tableau Integration – Build Once, Deliver to Many
+
+### **Purpose-Built Marts**
+- Flattened, denormalized tables in DBT with intuitive column names
+- Pre-aggregated metrics for direct Tableau usage
+
+### **Optimized Performance**
+- Materialize high-usage marts as tables
+- Use DBT incremental models where appropriate
+- Automate Tableau extract refresh via Airflow (REST API/webhooks)
+
+### **Governed Sharing**
+- Integrate Tableau with your identity provider
+- Apply embedded permissions within dashboards aligned with stakeholder needs
+
+---
+
+## ✅ Outcome: A Reporting Engine That Scales With Your Mission
+
+My approach is not just about clean SQL—it’s about building a **governance-first, role-aware, transparent data environment**. With this foundation, **MyTomorrows** will be able to:
+
+- ✅ Confidently deliver reports to clients like UnitedHealthcare without risking patient data  
+- ✅ Empower internal teams to make faster, more informed decisions  
+- ✅ Scale data workflows as new therapeutic areas, partners, and programs come online  
+
+> If desired, I can mock this into a DBT repo layout or diagram the Airflow + Tableau integration pipeline to demonstrate how I'd execute this plan from Day 1.
+
