@@ -345,7 +345,7 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 - Designed with privacy and export-readiness in mind  
 - Ideal for use in Tableau or other BI tools  
 
-</details>
+
 
 ---
 
@@ -400,7 +400,7 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 
 </details>
 
-# 🔐 D1C – Filters and Permissions for Secure Client Access
+## 🔐 D1C – Filters and Permissions for Secure Client Access
 
 ## 🧮 SQL-Level Row-Level Security (RLS)
 
