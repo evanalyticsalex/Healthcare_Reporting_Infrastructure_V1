@@ -1,5 +1,70 @@
-# MyTomorrows (private mode)
-A case study for scalable and secure client reporting for a growing Patient Advocacy Group
+# MyTomorrows – Scalable & Secure Client Reporting  
+_A case study for a growing Patient Advocacy Group_
+
+## 🧠 Objective  
+Design a scalable, secure, and privacy-compliant reporting workflow to support both internal and client-facing analytics in a healthcare-focused environment.
+
+---
+
+## ⚙️ Note on Tooling & Workflow Adjustments  
+
+### 🛠️ Initial Plan  
+The original architecture involved:
+- Loading the dataset into **PostgreSQL**
+- Transforming it using **DBT**
+- Orchestrating the pipeline with **Airflow**
+- Visualizing with **Tableau**
+
+### 🔄 Adapted Approach  
+Due to local environment constraints and time sensitivity, I adapted the setup to focus on delivering the **core value** of the assignment using accessible tools.
+
+---
+
+## 💻 Data Modeling & Transformation
+
+### Tools Used:
+- **DBeaver** (as SQL interface)
+- **SQLite** (lightweight local database)
+- **CSV files** (as source data)
+
+### Why DBeaver + SQLite?  
+This combination allowed me to:
+- Quickly **explore** and **understand** the dataset  
+- Test **joins**, **filters**, and **business logic** (e.g., uninsured patients, high-volume procedures)
+- Visualize relationships before moving to a production-grade setup
+
+> I treated this as a "sandbox phase" — experiment first, then scale to PostgreSQL + DBT as a theoretical proposal.
+
+### Implementation Notes:
+- Created schemas manually in DBeaver
+- Modeled key views to simulate reporting layers
+- In some cases, views were converted to tables due to SQLite limitations
+
+---
+
+## 📊 Visualization Layer
+
+### Tools Used:
+- **Tableau (local version)**
+- **Excel (as data connector)**
+
+### Why Excel?  
+My local Tableau version does not support live database connections. As a workaround:
+- Transformed views were exported as Excel files
+- Used those as the data source for dashboarding
+- Mockups and annotated walk-throughs were included where interactivity was limited
+
+---
+
+## 🔍 Focus Areas
+- Data pipeline design and modeling strategy  
+- Privacy-aware reporting (e.g., anonymization for external use)  
+- Dashboard logic, filters, and UX for internal/external stakeholders
+
+---
+
+Even though I didn’t implement a full production-grade stack, this case study reflects **my analytical thinking**, **data design decisions**, and how I **adapt to constraints** to deliver insight-driven solutions.
+
 
 ---
 
