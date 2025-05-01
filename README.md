@@ -6,6 +6,17 @@ Design a scalable, secure, and privacy-compliant reporting workflow to support b
 
 ---
 
+## ⚠️ Very Important Information About Deliverables  
+
+Each task deliverable has been named **exactly as requested**, following the required naming convention:  
+- Task 1 → `D1.A`, `D1.B`, etc.  
+- Task 2 → `D2.A`, `D2.B`, etc.  
+- And so on for subsequent sections.
+
+This ensures full alignment with submission guidelines and allows for quick referencing and review.
+
+---
+
 ## ⚙️ Note on Tooling & Workflow Adjustments  
 
 ### 🛠️ Initial Plan  
