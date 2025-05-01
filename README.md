@@ -95,7 +95,7 @@ This report outlines how the data was modeled, transformed, and secured to meet 
 
 ---
 
-## How I Would Model and Transform the Data (DBT or SQL Logic)
+## D.1 A.  How I Would Model and Transform the Data (DBT or SQL Logic)
 
 ### - 1. Source Layer (Staging Models)
 
