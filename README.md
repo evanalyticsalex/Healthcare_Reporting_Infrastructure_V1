@@ -333,9 +333,8 @@ JOIN dim_payers pa ON e.PAYER = pa.Id
 JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 ```
 
-<details>
-<summary><strong> Why This Structure A brief Explanation
 
+<summary><strong>Why This Structure A brief Explanation</strong></summary>
 
 - Each layer is clean, logical, and reusable
 - Modular views make debugging and extension easier
