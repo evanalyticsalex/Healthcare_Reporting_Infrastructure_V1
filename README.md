@@ -325,9 +325,9 @@ ORDER BY 1, 4 DESC
 
 This model serves as a Tableau extract source, ensuring client visibility without compromising patient privacy.
 
-# Task 2: Internal Report for Multi-Specialty Hospital Team (Humana)
+## 🧠 Task  2: Internal Report for Multi-Specialty Hospital Team (Humana)
 
-## D2.A — Technical Setup
+# D2.A — Technical Setup
 
 ### Data Architecture
 - **Data Warehouse**: PostgreSQL used for centralized, structured reporting
@@ -342,7 +342,7 @@ This model serves as a Tableau extract source, ensuring client visibility withou
 
 ---
 
-## D2.B — Dashboard Layout
+# D2.B — Dashboard Layout
 
 | Section                      | Functionality                                                                 |
 |-----------------------------|-------------------------------------------------------------------------------|
@@ -357,7 +357,7 @@ All charts and filters respect underlying permission controls.
 
 ---
 
-## D2.C — Permissions & Privacy Integration
+# D2.C — Permissions & Privacy Integration
 
 ### 1. **Hospice Data Restrictions**
 - `procedure_type = 'hospice'` is flagged in DBT models
