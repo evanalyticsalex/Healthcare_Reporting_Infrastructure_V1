@@ -2,6 +2,7 @@
 A case study for a scalable and secure clinet reporting for a growing patient Advocacy
 
 
+
 # Task 1: Client-Facing Report – UnitedHealthcare
 
 ## 🎯 Objective
@@ -206,3 +207,45 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 | Privacy        | No DOB, name, or direct PII                |
 
 ---
+
+
+---
+
+## 🧾 Summary Table Explained
+
+| Component       | Method                                     |
+|----------------|--------------------------------------------|
+| **Anonymization**  | Masked patient identifiers using hash logic: `substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12)` – ensures patients are pseudonymous but consistent across records |
+| **Grouping**       | Procedures are categorized using CASE logic into standard groups (e.g., Imaging, Oncology) via views like `Z1`, `X1`, and `X2` |
+| **Export**         | Views like `C6` and `X2` are pre-filtered, anonymized, and sorted to deliver export-ready datasets for UnitedHealthcare |
+| **Privacy**        | Direct identifiers like name and DOB are excluded entirely – only masked IDs are shown in Tableau and exports |
+
+---
+
+## 🧮 Snapshot of Tables and Views – What They Represent
+
+### Base Tables (Fact + Dimension)
+- **fct_procedures**: Raw procedure-level data (code, description, base cost, encounter ID)
+- **fct_encounters**: Encounter metadata (start date, patient ID, claim cost, payer coverage)
+- **dim_payers**: Insurance provider information (payer name, ID)
+- **dim_organizations**: Organization or facility-level data
+- **dim_procedure_category_mapping**: Mapping table to group procedures into categories
+
+---
+
+### Key Views for UnitedHealthcare Report
+
+| View Name | Purpose |
+|-----------|---------|
+| **Z1_dim_procedure_category_mapping** | Defines grouping logic for raw procedure descriptions |
+| **C1_rpt_procedure_volume_uhc** | Counts and cost summaries of procedures for UnitedHealthcare |
+| **C2_rpt_high_volume_patients_uhc** | Flags patients with high numbers of visits under UHC |
+| **C4_rpt_uninsured_patients_all** | Identifies patients without insurance coverage |
+| **C6_rpt_procedure_sorted_export_uhc** | Provides export-ready data sorted by procedure and date |
+| **X2_rpt_tableau_export_masked** | Final export view with masked patient IDs, procedure categories, and no PII |
+| **V1_summary_uhc_dashboard** (optional) | Summary layer for Tableau performance (can be added) |
+
+These views combine fact and dimension data, filter for UHC-specific logic, group treatments consistently, and ensure safe, compliant exports.
+
+---
+
