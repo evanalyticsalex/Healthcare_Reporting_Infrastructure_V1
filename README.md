@@ -240,7 +240,7 @@ ISMEMBEROF('Client_UHC')
 
 </details>
 
-# | | D1.D: Anonymization, Grouping, and Export Logic
+# | | D1.D - Anonymization, Grouping, and Export Logic
 
 ## 🔐 Anonymization
 
@@ -423,7 +423,7 @@ All charts and filters respect underlying permission controls.
 This internal reporting setup for Humana ensures specialty-specific usability, sensitive data protection, and regulatory compliance, built on a scalable stack using PostgreSQL, DBT, Airflow, and Tableau.
 
 
-## 🧠 Task  3: Senior Management Deep-Dive Reporting
+## 🧠 Task 3: Senior Management Deep-Dive Reporting
 
 The leadership wants:
 - Detailed operational insights with as much granularity as possible
@@ -510,7 +510,7 @@ As **Senior Data & Reporting Analyst**, my priority will be to **stabilize and s
 
 ---
 
-# 🔍 D4.A Clean, Well-Modeled Data – Designed for Trust & Reusability
+# 🔍 D4.A - Clean, Well-Modeled Data – Designed for Trust & Reusability
 
 ### **Modular DBT Layering**
 I’d structure the DBT project with `staging → intermediate → marts`, separating concerns and making transformation logic transparent and testable:
@@ -529,7 +529,7 @@ Every model should be documented with purpose, input/output, and owner—critica
 
 ---
 
-# 🔁 D4.B Repeatable, Scalable Pipelines – Airflow Orchestration That Works for You
+# 🔁 D4.B - Repeatable, Scalable Pipelines – Airflow Orchestration That Works for You
 
 ### **Domain-Based DAGs**
 Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
@@ -550,7 +550,7 @@ Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
 
 ---
 
-# 🔐 D4.C Governance & Security – HIPAA-Grade by Design
+# 🔐 D4.C - Governance & Security – HIPAA-Grade by Design
 
 ### **Patient Privacy**
 - SHA-256 hashing for patient IDs
@@ -570,7 +570,7 @@ Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
 
 ---
 
-# 📊 D4.D Seamless Tableau Integration – Build Once, Deliver to Many
+# 📊 D4.D - Seamless Tableau Integration – Build Once, Deliver to Many
 
 ### **Purpose-Built Marts**
 - Flattened, denormalized tables in DBT with intuitive column names
