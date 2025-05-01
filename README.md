@@ -147,7 +147,7 @@ substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id
 
 # 📊 D1.B – Tableau Dashboard Mockup Plan
 
-![Tableau UHC Dashboard](:data/Tableau_UHC.png)
+![Tableau UHC Dashboard](data/Tableau_UHC.png)
 
 <details>
 <summary><strong>📋 Filters</strong></summary>
