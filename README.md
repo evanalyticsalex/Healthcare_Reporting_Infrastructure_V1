@@ -348,3 +348,41 @@ Ideal for use in Tableau or other BI tools
 </details>
 
 ------
+# D1.B 📊 Tableau Dashboard Mockup Plan
+
+## Filters (Top of Dashboard)
+- **Standardized Procedure Group** (`procedure_group`)
+- **Date Range** (on `procedure_date`)
+- **Insurance Coverage** (`payer_name`)
+
+---
+
+## KPI Tiles
+- **Total Encounters:** `COUNT(encounter_id)` from C1
+- **Uninsured Patients:** Derived from C4
+- **High-Volume Patients:** From aggregation in C2
+
+---
+
+## Bar Chart
+- **X-axis:** `procedure_group`
+- **Y-axis:** `encounter_count`
+- *Data Source:* Use V1 or C3
+
+---
+
+## Line Chart
+- **X-axis:** `procedure_date` (monthly aggregation)
+- **Y-axis:** Monthly encounter volume
+- *Data Source:* Use X2
+
+---
+
+## Table Export
+- **Data Source:** `X2_rpt_tableau_export_masked`
+- **Columns to Show:**
+  - `procedure_group`
+  - `cost`
+  - `procedure_date`
+  - `organization_name`
+  - `payer_name`
