@@ -423,3 +423,84 @@ All charts and filters respect underlying permission controls.
 This internal reporting setup for Humana ensures specialty-specific usability, sensitive data protection, and regulatory compliance, built on a scalable stack using PostgreSQL, DBT, Airflow, and Tableau.
 
 
+## 🧠 Task  3: Senior Management Deep-Dive Reporting
+
+The leadership wants:
+- Detailed operational insights with as much granularity as possible
+- Extracts available to all staff, but visualizations only for execs
+- Ongoing visibility into volume, cost drivers, missed patients, and trends
+
+---
+---
+
+# D3.A — Executive Dashboard vs. Raw Extracts
+
+### Executive Dashboard
+A strategic Tableau dashboard designed for leadership:
+
+- **Trends:** Monthly or quarterly volume patterns
+- **Drill-down:** By `procedure_type`, `insurance_status`, `payer`, or patient group
+- **Anomalies:** Highlight sudden spikes in `cost` or `procedure_count`
+- **Filters:** `encounter_date`, `payer`, `treatment_group`, `organization_id`
+
+### Raw Extracts
+Granular datasets for internal exploration:
+
+- **Fields:** `procedure_id`, `cost`, `insurance_status`, `patient_id`, `encounter_id`, `organization_id`
+- **Delivery:** Refreshed via Airflow
+- **Access:** Secure internal portal (CSV or Excel download)
+
+---
+
+# D3.B — Access Control Strategy (Tableau + Data Layer)
+
+### Tableau Permissions
+- **Executives:** Full access to dashboards
+- **Staff:** Access only to data extracts or basic visuals
+- **Setup:** Role-based access enforced via Tableau Sites or folders
+
+### Data Layer (PostgreSQL + DBT)
+- **Row-Level Security:** Based on `user_role` or `department`
+- **Views:** PostgreSQL views like `exec_dashboard_view`, `raw_extract_view` filter fields per user role
+- **DBT Models:** Separate models for raw vs executive consumption (e.g., `stg_procedures`, `int_kpis_by_month`)
+
+---
+
+# D3.C — Key Metrics (KPIs) and Their Meaning
+
+### 1. Procedure Volume Trend
+Tracks how many procedures are performed over time. Helps leadership monitor service delivery and identify seasonal or unexpected fluctuations.
+
+### 2. Missed Patient Rate
+Reflects the percentage of patients who were not treated or had no insurance coverage. Useful for identifying underserved populations and gaps in care.
+
+### 3. Top Cost Drivers
+Highlights which procedure types or departments generate the highest costs. Supports budgeting and cost control efforts.
+
+### 4. Average Cost per Patient
+Calculates the average spending per unique patient. Enables benchmarking and tracking cost efficiency over time.
+
+### 5. New vs. Returning Patients
+Distinguishes between first-time patients and repeat visitors. Useful to measure growth, patient retention, and long-term program engagement.
+
+---
+## Outcome Summary — KPI Alignment with Leadership Goals
+
+The selected KPIs directly address the leadership’s strategic objectives:
+
+- **Volume Visibility:**  
+  The *Procedure Volume Trend* shows activity levels over time, revealing patterns and anomalies.
+
+- **Cost Transparency:**  
+  The *Top Cost Drivers* and *Average Cost per Patient* uncover areas with the highest financial impact and track efficiency.
+
+- **Patient Engagement Gaps:**  
+  The *Missed Patient Rate* surfaces the percentage of patients missed due to lack of treatment or insurance.
+
+- **Trend & Retention Monitoring:**  
+  The *New vs. Returning Patients* metric offers insight into patient retention and acquisition performance.
+
+The reporting setup provides:
+- **Raw Extracts** to all staff via secure portals for data transparency and operational usage
+- **Executive Dashboards** with deeper insights and role-based access control to guide strategic decision-making
+
