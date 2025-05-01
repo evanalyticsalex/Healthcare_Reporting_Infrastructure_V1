@@ -27,6 +27,11 @@ Each deliverable is named as required:
 | Visualization | Tableau (Excel workaround for local dev) |
 
 ---
+## 🗺️ Entity Relationship Diagram
+
+The diagram below illustrates the structure used in the data model:
+
+![Entity Relationship Diagram](./data/ERD Diagram.png)
 
 
 ---
