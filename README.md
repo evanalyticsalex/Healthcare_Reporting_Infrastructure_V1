@@ -52,6 +52,7 @@ UnitedHealthcare requested a secure, standardized view of their patient data. Th
 
 <details>
 <summary><strong>1️⃣ Source Layer – Staging Models</strong></summary>
+This view combines data from different tables to create a clean, easy-to-read table with encounter details, procedure info, payer, and organization names. It also formats the date so it can be used in reports.
 
 ```sql
 CREATE VIEW A2_rpt_encounter_procedure_flat_ymd AS
@@ -75,6 +76,7 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 
 <details>
 <summary><strong>2️⃣ Intermediate Layer – Grouping Logic</strong></summary>
+This view adds a new column to group procedures into categories like “Assessment” or “Screening” based on keywords. It helps make the data more consistent and easier to understand.
 
 ```sql
 CREATE VIEW X1_rpt_encounter_procedure_with_grouping AS
@@ -104,18 +106,19 @@ JOIN dim_organizations o ON e.ORGANIZATION = o.Id;
 
 <details>
 <summary><strong>3️⃣ Reporting Layer – Final Views</strong></summary>
-
+This view shows how often each procedure is done for UnitedHealthcare and the total cost. It groups the data by procedure and is ready for use in dashboards and exports.
+  
 ```sql
 CREATE VIEW C1_rpt_procedure_volume_uhc AS
 SELECT
-  p.CODE AS procedure_code,
-  p.DESCRIPTION AS procedure_description,
-  COUNT(*) AS procedure_count,
-  SUM(p.BASE_COST) AS total_base_cost
+    p.CODE AS procedure_code,
+    p.DESCRIPTION AS procedure_description,
+    COUNT(*) AS procedure_count,
+    SUM(p.BASE_COST) AS total_base_cost
 FROM fct_procedures p
 JOIN fct_encounters e ON p.ENCOUNTER = e.Id
 JOIN dim_payers py ON e.PAYER = py.Id
-WHERE py.NAME = 'UnitedHealthcare'
+WHERE LOWER(py.NAME) LIKE '%united%'
 GROUP BY p.CODE, p.DESCRIPTION;
 ```
 
@@ -123,6 +126,8 @@ GROUP BY p.CODE, p.DESCRIPTION;
 
 <details>
 <summary><strong>4️⃣ Privacy & Masking Logic</strong></summary>
+This layer (assumed) hides or removes any private patient information to make sure the data is safe and follows HIPAA rules before sharing it with clients. 
+**This  logic creates a consistent but anonymous patient ID by using math with large prime numbers and converting the result to hex. It hides the real ID but still lets us group and filter by patient safely.
 
 ```sql
 substr(HEX(abs(e.PATIENT * 100000007 % 1000000007)), 1, 12) AS masked_patient_id
