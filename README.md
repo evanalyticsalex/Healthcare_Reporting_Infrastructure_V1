@@ -48,7 +48,7 @@ UnitedHealthcare requested a secure, standardized view of their patient data. Th
 
 ---
 
-# 🧩 D1.A – How I Would Model and Transform the Data
+# 🧩 D1.A – How I Would Model and Transform the Data (SQL queries below)
 
 <details>
 <summary><strong>1️⃣ Source Layer – Staging Models</strong></summary>
