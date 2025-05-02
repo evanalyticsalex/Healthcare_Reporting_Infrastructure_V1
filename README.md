@@ -250,7 +250,7 @@ ISMEMBEROF('Client_UHC')
 
 </details>
 
-# | | D1.D - Anonymization, Grouping, and Export Logic
+# |🔐| D1.D - Anonymization, Grouping, and Export Logic
 
 ## 🔐 Anonymization
 
