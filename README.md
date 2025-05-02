@@ -556,7 +556,7 @@ Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
 
   (Example of Expectations: "This column should always have a positive number." "Dates must be within the last 30 days." "95% of values should match a known pattern.")
 
-### **Secure Secrets Management**
+### **Secure Secrets Management** (i.e.,:Safely storing sensitive information)
 - Use Airflow Variables or HashiCorp Vault
 - Avoid credentials or tokens in DAG source code
 
