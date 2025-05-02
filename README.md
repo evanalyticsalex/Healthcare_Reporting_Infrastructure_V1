@@ -284,7 +284,7 @@ END AS age_bucket
 
 - **PII Exclusion:** Drop fields such as `name`, `address`, and exact `date_of_birth` from reporting views.
 
-## 📦 Grouping (Procedure Standardization)
+## 📦 Grouping (i.e., Procedure Standardization)
 
 Standardize procedure types for clearer client reporting and analytics by grouping procedure codes.
 
