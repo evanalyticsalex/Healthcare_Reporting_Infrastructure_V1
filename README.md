@@ -268,7 +268,7 @@ FROM patients
 ```
 </details>
 
-- **DOB Bucketing:** Convert `patients.date_of_birth` into non-identifiable age buckets for analysis.
+- **DOB (Date_of_Birth) Bucketing:** Convert `patients.date_of_birth` into non-identifiable age buckets for analysis.
 
 <details>
 <summary>SQL Example Hypothetical</summary>
