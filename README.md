@@ -553,6 +553,7 @@ Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
 ### **Resilience Built-In**
 - Retries, failure alerts (Slack/email), task-level logging
 - Optional: Integrate **Great Expectations** for advanced data validation
+  (example of Expectations: "This column should always have a positive number." "Dates must be within the last 30 days." "95% of values should match a known pattern.")
 
 ### **Secure Secrets Management**
 - Use Airflow Variables or HashiCorp Vault
