@@ -541,7 +541,7 @@ Every model should be documented with purpose, input/output, and owner—critica
 
 # 🔁 D4.B - Repeatable, Scalable Pipelines – Airflow Orchestration That Works for You
 
-### **Domain-Based DAGs**
+### **Domain-Based DAGs(Data workflows)**
 Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
 - Example: `client_reporting_dag`, `internal_monitoring_dag`
 
