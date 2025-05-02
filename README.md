@@ -200,7 +200,7 @@ Link :https://public.tableau.com/shared/7KGHCCWJT?:display_count=n&:origin=viz_s
 - Payer Name  
 
 </details>
-
+**The filtering is dynamic and applies consistently across all views, with potential for future enhancements as users continue to provide input and feedback.**
 ---
 
 # 🔐 D1.C – Filters and Permissions for Secure Client Access
