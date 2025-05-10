@@ -1,5 +1,5 @@
 
-# mytomorrows – Scalable & Secure Client Reporting  
+# Scalable & Secure Client Reporting  
 _A case study for a growing Patient Advocacy Group_
 
 ---
@@ -601,7 +601,7 @@ Instead of monolithic pipelines, introduce DAGs based on domain or stakeholder:
 
 ## ✅ Outcome: A Reporting Engine That Scales With Your Mission
 
-This approach goes beyond writing clean SQL—it establishes a governance-driven, role-sensitive, and transparent data ecosystem. With this solid foundation, **mytomorrows**  will be empowered to::
+This approach goes beyond writing clean SQL—it establishes a governance-driven, role-sensitive, and transparent data ecosystem. With this solid foundation, will be empowered to::
 
 - ✅ Confidently deliver reports to clients like UnitedHealthcare without risking patient data  
 - ✅ Empower internal teams to make faster, more informed decisions  
